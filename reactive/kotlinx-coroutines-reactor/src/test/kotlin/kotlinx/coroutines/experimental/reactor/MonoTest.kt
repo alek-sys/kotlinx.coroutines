@@ -17,19 +17,21 @@
 package kotlinx.coroutines.experimental.reactor
 
 import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.runBlocking
-import org.junit.Assert.assertEquals
-import org.junit.Test
 import kotlinx.coroutines.experimental.TestBase
 import kotlinx.coroutines.experimental.reactive.awaitFirst
 import kotlinx.coroutines.experimental.reactive.awaitLast
 import kotlinx.coroutines.experimental.reactive.awaitSingle
+import kotlinx.coroutines.experimental.runBlocking
 import kotlinx.coroutines.experimental.yield
 import org.hamcrest.core.IsEqual
 import org.hamcrest.core.IsInstanceOf
 import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Test
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.time.Duration
+import java.time.temporal.ChronoUnit
 
 /**
  * Tests emitting single item with [mono].
@@ -141,7 +143,7 @@ class MonoTest : TestBase() {
     @Test
     fun testMonoWithDelay() {
         val mono = mono(CommonPool) {
-            Flux.just("O").delayMillis(50).awaitSingle() + "K"
+            Flux.just("O").delayElements(Duration.of(50, ChronoUnit.MILLIS)).awaitSingle() + "K"
         }
 
         checkMonoValue(mono) {
